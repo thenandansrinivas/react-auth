@@ -1,0 +1,31 @@
+{
+	"name": "Tray",
+	"version": "1.0.0",
+	"description": "Tray Manager App",
+	"type": "module",
+	"workspaces": [
+		"client",
+		"server"
+	],
+	"scripts": {
+		"check":"prettier --check .",
+		"fix":"prettier --write .",
+		"server:check":"prettier --check server",
+		"server:fix":"prettier --write server",
+		"client:check":"prettier --check client",
+		"client:fix":"prettier --write client"
+		
+	},
+	"devDependencies": {
+		"concurrently": "^9.1.2",
+		"prettier": "^3.4.2"
+	},
+	"dependencies": {
+		"date-fns": "^4.1.0",
+		"dayjs": "^1.11.13",
+		"lodash": "^4.17.21",
+		"zod": "^3.24.1"
+	},
+	"author": "Nandan S",
+	"license": "ISC"
+}

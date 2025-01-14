@@ -1,0 +1,10 @@
+{
+	"restartable": "rs",
+	"ignore": [".git", "node_modules/**/node_modules", "dist", "coverage"],
+	"verbose": true,
+	"execMap": {
+		"js": "node --harmony"
+	},
+	"watch": ["src/"],
+	"ext": "js,json,ts"
+}

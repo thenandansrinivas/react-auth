@@ -1,0 +1,27 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"description": "Tray Manager API",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"dev": "cross-env NODE_ENV=dev nodemon src/main.js",
+		"start": "cross-env node src/main.js"
+	},
+	"author": "Nandan S",
+	"license": "ISC",
+	"dependencies": {
+		"argon2": "^0.41.1",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
+		"cross-env": "^7.0.3",
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"http-errors": "^2.0.0",
+		"mongoose": "^8.9.5",
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.9"
+	}
+}
