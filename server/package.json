@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "cross-env NODE_ENV=dev nodemon src/main.js",
-		"start": "cross-env node src/main.js"
+		"preview": "cross-env node src/main.js"
 	},
 	"author": "Nandan S",
 	"license": "ISC",

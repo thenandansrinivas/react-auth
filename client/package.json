@@ -1,7 +1,8 @@
 {
-  "name": "client",
+  "name": "tray",
   "private": true,
   "version": "0.0.0",
+  "description": "Tray Manager API",
   "type": "module",
   "scripts": {
     "dev": "vite --mode dev",
@@ -15,6 +16,8 @@
     "@tanstack/react-query-devtools": "^5.64.1",
     "antd": "^5.23.1",
     "axios": "^1.7.9",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.471.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
