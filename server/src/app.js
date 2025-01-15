@@ -7,6 +7,7 @@ import _ from 'lodash'
 
 import config from './config/env.js'
 import { globalErrorHandler, asyncErrorHandler } from './middlewares/error.js'
+import api from './router.js'
 
 const { ORIGIN, SECRET_COOKIE } = config
 
@@ -38,6 +39,8 @@ app.get(
 		})
 	})
 )
+
+app.use('/v1', api)
 
 app.use((req, res, next) => {
 	next(createError.NotFound())
