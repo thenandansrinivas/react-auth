@@ -27,8 +27,9 @@ const genExpForCookies = EXPIN => {
 	return new Date(Date.now() + value * multiplier)
 }
 
-export const setCookies = ({ res, access, refresh }) =>
-	res
+export const setCookies = (res, token) => {
+	const { access, refresh } = token
+	return res
 		.cookie('access', access, {
 			path: '/',
 			secure: ENV !== 'dev',
@@ -43,8 +44,8 @@ export const setCookies = ({ res, access, refresh }) =>
 			httpOnly: true,
 			expires: genExpForCookies(JWTREFRESH_EXPIN)
 		})
-
-export const setAccessCookie = ({ res, access }) =>
+}
+export const setAccessCookie = (res, access) =>
 	res.cookie('access', access, {
 		path: '/',
 		secure: ENV !== 'dev',
@@ -52,7 +53,7 @@ export const setAccessCookie = ({ res, access }) =>
 		httpOnly: true
 	})
 
-export const clearCookies = ({ res }) =>
+export const clearCookies = res =>
 	res
 		.clearCookie('access', {
 			path: '/'

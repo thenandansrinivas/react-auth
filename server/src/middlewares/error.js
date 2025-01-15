@@ -1,4 +1,5 @@
 import config from '../config/env.js'
+import { clearCookies } from '../utils/cookie.js'
 
 const { ENV } = config
 
@@ -10,6 +11,10 @@ export const globalErrorHandler = (err, req, res, next) => {
 	const status = err.status || 500
 	const message = err.message || 'Something went wrong'
 	const stack = ENV === 'dev' && err?.stack
+
+	if (req.path === '/v1/auth/refresh') {
+		clearCookies(res)
+	}
 
 	const errMsg = {
 		status,
@@ -35,6 +40,10 @@ export const globalErrorHandler = (err, req, res, next) => {
 		errMsg.message = 'Record alredy exists'
 		errMsg.errors = err.errorResponse.keyValue
 		errMsg.status = 400
+	}
+
+	if (err.name === 'InvalidAccessToken') {
+		errMsg.name = err.name
 	}
 
 	res.status(errMsg.status).json(errMsg)

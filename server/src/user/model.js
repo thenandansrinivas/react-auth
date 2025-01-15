@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 import { generateId } from '../utils/nanoid.js'
-import argon from 'argon2'
+import { hashPass } from '../utils/argon.js'
 
 const userSchema = new Schema(
 	{
@@ -56,13 +56,18 @@ const userSchema = new Schema(
 userSchema.pre('save', async function (next) {
 	const user = this
 	const password = user?.name?.slice(0, 3) + '@' + user?.phone?.slice(-3)
-	user.password = await argon.hash(password)
+	user.password = await hashPass(password)
 	next()
 })
 
 userSchema.methods.omitPass = function () {
 	const user = this.toObject()
 	delete user.password
+	return user
+}
+
+userSchema.statics.loggedInUser = async function (id) {
+	const user = await User.findOne({ _id: id }).select('name roles -_id')
 	return user
 }
 
