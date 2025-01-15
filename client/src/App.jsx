@@ -12,6 +12,7 @@ const Layout = lazy(() => import('./Layout'))
 const Login = lazy(() => import('./Auth/Page'))
 const Index = lazy(() => import('./Index'))
 const Clinic = lazy(() => import('./Clinic/Page'))
+const Patient = lazy(() => import('./Patient/Page'))
 
 const routes = createBrowserRouter([
 	{
@@ -29,6 +30,10 @@ const routes = createBrowserRouter([
 			{
 				path: 'clinic',
 				element: <LazyComponent component={Clinic} />
+			},
+			{
+				path: 'patient',
+				element: <Patient />
 			}
 		]
 	},

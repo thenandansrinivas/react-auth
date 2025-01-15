@@ -44,9 +44,9 @@ export const getAllUsers = async request => {
 }
 
 export const postNewUser = async data => {
-	const newUser = new User(data)
 	const isUserExist = await User.exists({ $or: [{ phone: data.phone }, { email: data.email }] })
 	if (isUserExist) throw new createError.Conflict('Phone or email alredy exists')
+	const newUser = new User(data)
 	const savedUser = await newUser.save()
 	return savedUser.omitPass()
 }
