@@ -7,7 +7,7 @@ const Auth = Router()
 
 Auth.post('/login', asyncErrorHandler(login))
 Auth.get('/refresh', asyncErrorHandler(refresh))
-Auth.get('/logout', asyncErrorHandler(logout))
+Auth.get('/logout', Authenticate, asyncErrorHandler(logout))
 Auth.get('/me', Authenticate, asyncErrorHandler(me))
 
 export default Auth

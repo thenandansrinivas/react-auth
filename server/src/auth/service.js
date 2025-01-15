@@ -7,7 +7,7 @@ export const validateRequest = async request => {
 	const isUserExist = await User.exists({ $or: [{ phone: request.username }, { email: request.username }] }).where({
 		isActive: true
 	})
-	if (!isUserExist) throw new createError.NotFound('User not found')
+	if (!isUserExist) throw new createError.NotFound('User not found or Login Disabled')
 	const user = await User.findOne({ _id: isUserExist._id }).select('password roles')
 	const confirmPass = await verifyPass(user.password, request.password)
 	if (!confirmPass) throw new createError.Unauthorized('Invalid usernam or password')
