@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 const Loading = () => null
 
 const LazyComponent = ({ component: Component }) => (
-	<Suspense fallback={<Loading />}>
+	<Suspense fallback={<Loading size="large" />}>
 		<Component />
 	</Suspense>
 )

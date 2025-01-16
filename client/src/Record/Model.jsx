@@ -83,7 +83,8 @@ const Model = ({ open, onCancel, clinics, onRecordSubmit }) => {
 				</Text>
 			}
 			onOk={handleSubmit(onSubmit)}
-			width={600}>
+			width={600}
+		>
 			<Form layout="vertical" size="small">
 				<Row gutter={16}>
 					<Col span={12}>

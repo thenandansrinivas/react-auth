@@ -14,7 +14,11 @@ const Table = ({
 	handleAddTay,
 	handleDeleteTray,
 	handleDeleteTrayType,
-	handleRecordLogs
+	handleRecordLogs,
+	pagination,
+	onSort,
+	sortField,
+	sortOrder
 }) => {
 	const [expandedRowKeys, setExpandedRowKeys] = useState([])
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -23,7 +27,6 @@ const Table = ({
 	const [isTrayModalOpen, setIsTrayModalOpen] = useState(false)
 	const [trayNumber, setTrayNumber] = useState('')
 	const [selectedRecord, setSelectedRecord] = useState(null)
-
 	const TimeDisplay = ({ timeline, action }) => {
 		const timeEntry = timeline?.find(item => item.action === action)
 
@@ -121,12 +124,22 @@ const Table = ({
 		handleDeleteTrayType(data)
 	}
 
+	const handleTableChange = (pag, filters, sorter, extra) => {
+		const { field, order } = sorter
+		if (extra.action === 'sort') {
+			onSort(field, order === 'ascend' ? 'asc' : 'desc', pag.current, pag.pageSize)
+		} else if (extra.action === 'paginate') {
+			onSort(sortField, sortOrder === 'ascend' ? 'asc' : 'desc', pag.current, pag.pageSize)
+		}
+	}
+
 	const Columns = [
 		{
 			title: 'Name',
 			dataIndex: 'name',
 			key: 'name',
 			sorter: true,
+			sortOrder: sortField === 'name' ? sortOrder : null,
 			width: 200,
 			render: (name, record) => (
 				<p className="text-sm font-medium text-gray-900 capitalize">
@@ -141,14 +154,16 @@ const Table = ({
 			dataIndex: 'phone',
 			key: 'phone',
 			sorter: true,
+			sortOrder: sortField === 'phone' ? sortOrder : null,
 			width: 100,
 			render: phone => <p className="text-sm font-medium text-gray-900 capitalize">{phone}</p>
 		},
 		{
 			title: 'Age',
-			dataIndex: ['age', 'dob'],
+			dataIndex: 'age',
 			key: 'age',
 			sorter: true,
+			sortOrder: sortField === 'age' ? sortOrder : null,
 			width: 50,
 			render: (age, record) => (
 				<p className="text-sm font-medium text-gray-900 capitalize">
@@ -158,16 +173,17 @@ const Table = ({
 		},
 		{
 			title: 'Clinic',
-			dataIndex: 'clinic',
-			key: 'clinic',
+			dataIndex: ['clinic', 'name'],
+			key: 'clinic.name',
 			width: 100,
-			render: clinic => <p className="text-sm font-medium text-gray-900 capitalize">{clinic?.name}</p>
+			render: name => <p className="text-sm font-medium text-gray-900 capitalize">{name}</p>
 		},
 		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
 			sorter: true,
+			sortOrder: sortField === 'status' ? sortOrder : null,
 			width: 50,
 			render: status => (
 				<p
@@ -188,9 +204,11 @@ const Table = ({
 			dataIndex: 'trays',
 			key: 'trays',
 			sorter: true,
+			sortOrder: sortField === 'trays' ? sortOrder : null,
 			width: 50,
 			render: trays => <p className="text-sm font-medium text-gray-900 capitalize">{trays?.length}</p>
 		},
+
 		{
 			title: 'Action',
 			dataIndex: 'action',
@@ -420,11 +438,13 @@ const Table = ({
 	return (
 		<>
 			<AntTable
+				className="shadow-sm"
 				dataSource={data}
 				loading={isLoading}
 				columns={Columns}
 				size="small"
 				rowKey="_id"
+				onChange={handleTableChange}
 				expandable={{
 					expandedRowRender: record => {
 						const traysWithParentId = record.trays.map(tray => ({
@@ -450,14 +470,13 @@ const Table = ({
 					}
 				}}
 				pagination={{
-					pageSize: 5,
+					total: pagination?.totalItems,
+					current: pagination?.currentPage,
+					pageSize: pagination?.itemsPerPage,
 					showSizeChanger: true,
 					showQuickJumper: true,
-					showPrevNextJumpers: true,
-					pageSizeOptions: [5, 10, 15, 20, 50, 100],
 					showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-					showTitle: true,
-					showLessItems: true
+					pageSizeOptions: [5, 10, 15, 20, 50, 100]
 				}}
 			/>
 

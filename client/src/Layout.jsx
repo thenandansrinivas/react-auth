@@ -1,7 +1,8 @@
 import { Button, Card, Layout as AntLayout, Menu, Flex } from 'antd'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Hospital, Monitor, Plus, Settings2, UsersRound } from 'lucide-react'
-import { useCallback, useMemo, useState, useEffect } from 'react'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Hospital, Monitor, Plus, Settings2, UsersRound, LogOut } from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
+import useAuth from './Hooks/useAuth'
 import classNames from 'classnames'
 
 const { Sider, Content } = AntLayout
@@ -19,31 +20,16 @@ function getItem(label, key, icon, children, path, roles = ['*']) {
 
 const Layout = () => {
 	const location = useLocation()
+	const navigate = useNavigate()
 	const name = location.pathname.split('/')[1]
 	const [openModal, setOpenModal] = useState(() => {})
+	const { logoutMutate } = useAuth()
 
 	// Initialize collapsed state from localStorage or default to false
 	const [collapsed, setCollapsed] = useState(() => {
 		const savedState = localStorage.getItem('sidebarCollapsed')
 		return savedState ? JSON.parse(savedState) : false
 	})
-
-	const [logoUrl, setLogoUrl] = useState(localStorage.getItem('logoUrl') || '/logo.svg')
-
-	useEffect(() => {
-		const handleStorageChange = () => {
-			const newLogoUrl = localStorage.getItem('logoUrl')
-			if (newLogoUrl && newLogoUrl !== logoUrl) {
-				setLogoUrl(newLogoUrl)
-			}
-		}
-
-		window.addEventListener('storage', handleStorageChange)
-
-		return () => {
-			window.removeEventListener('storage', handleStorageChange)
-		}
-	}, [logoUrl])
 
 	const handleNewClick = useCallback(() => {
 		openModal()
@@ -78,9 +64,18 @@ const Layout = () => {
 		setCollapsed(value)
 		localStorage.setItem('sidebarCollapsed', JSON.stringify(value))
 	}
-
-	// Calculate sidebar width based on collapsed state
 	const sidebarWidth = collapsed ? 80 : 200
+
+	const handleLogOut = () => {
+		logoutMutate(
+			{},
+			{
+				onSuccess: () => {
+					navigate('/login', { replace: true })
+				}
+			}
+		)
+	}
 
 	return (
 		<AntLayout className="min-h-screen">
@@ -92,21 +87,35 @@ const Layout = () => {
 				className="fixed h-screen overflow-hidden"
 				width={200}
 				collapsedWidth={80}>
-				<div className="flex justify-center items-center h-16 m-5">
-					<img
-						src={logoUrl}
-						alt="Logo"
-						className={`transition-all duration-300 ${
-							collapsed ? 'w-10 h-10' : 'w-24 h-auto max-h-20'
-						} object-contain`}
+				<div className="flex flex-col h-full">
+					<div className="flex justify-center items-center h-16 m-5">
+						<img
+							src="./logo.svg"
+							alt="Logo"
+							className={`transition-all duration-300 ${
+								collapsed ? 'w-10 h-10' : 'w-24 h-auto max-h-20'
+							} object-contain`}
+						/>
+					</div>
+					<Menu
+						items={navItems}
+						defaultSelectedKeys={['1']}
+						selectedKeys={selectedKeys}
+						className="flex-1 my-3 px-3 font-semibold text-xl"
 					/>
+					<div className="p-4 border-t border-gray-200">
+						<button
+							className="flex items-center gap-2 w-full px-3 py-2 text-gray-700 hover:bg-red-100 rounded-lg transition-colors group"
+							onClick={handleLogOut}>
+							<LogOut size={20} className="text-red-500 transition-colors" />
+							{!collapsed && (
+								<span className="font-medium group-hover:text-red-500 font-semibold text-xl">
+									Logout
+								</span>
+							)}
+						</button>
+					</div>
 				</div>
-				<Menu
-					items={navItems}
-					defaultSelectedKeys={['1']}
-					selectedKeys={selectedKeys}
-					className="h-[calc(100vh-64px)] my-3 px-3 font-semibold text-xl"
-				/>
 			</Sider>
 			<AntLayout style={{ marginLeft: sidebarWidth }}>
 				<Content className="p-4 min-h-screen">

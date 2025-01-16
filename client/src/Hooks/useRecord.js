@@ -14,14 +14,14 @@ import {
 	reportGenFn
 } from '../Record/apiFn.js'
 
-export const useRecord = () => {
+export const useRecord = (filters = {}) => {
 	const {
 		data: Records,
 		isLoading: isRecordLoading,
 		refetch
 	} = useQuery({
-		queryKey: ['record'],
-		queryFn: RecordFn
+		queryKey: ['record', filters],
+		queryFn: () => RecordFn(filters)
 	})
 	const { mutate: checkRecordMutate } = useMutation({
 		mutationFn: CheckRecordFn

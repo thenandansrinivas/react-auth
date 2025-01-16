@@ -12,11 +12,101 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export const displayRecords = async (req, res, next) => {
-	const records = await Record.find({}).populate('clinic', { name: 1 })
-	return records
-}
+export const displayRecords = async (query = {}) => {
+	// Extract query parameters with defaults
+	const search = query.search || ''
+	const page = parseInt(query.page) || 1
+	const limit = parseInt(query.limit) || 5
+	const skip = (page - 1) * limit
+	const status = query.status || ''
+	const clinic = query.clinic || ''
+	const gender = query.gender || ''
+	const sortBy = query.sortBy || 'createdAt'
+	const orderBy = query.orderBy || 'desc'
 
+	// Build search conditions array
+	const searchConditions = []
+
+	// Add search condition for name and phone
+	if (search) {
+		searchConditions.push({
+			$or: [
+				{ name: { $regex: `.*${search.trim()}.*`, $options: 'i' } },
+				{ phone: { $regex: search.trim(), $options: 'i' } }
+			]
+		})
+	}
+
+	// Add status filter
+	if (status) {
+		searchConditions.push({ status: status })
+	}
+
+	// Add clinic filter
+	if (clinic) {
+		searchConditions.push({ clinic: clinic })
+	}
+
+	// Add gender filter
+	if (gender) {
+		searchConditions.push({ gender: gender })
+	}
+
+	// Prepare sort object
+	const sort = {}
+	sort[sortBy] = orderBy === 'asc' ? 1 : -1
+
+	try {
+		// Get total count and data
+		const conditions = searchConditions.length > 0 ? { $and: searchConditions } : {}
+
+		// Execute both queries in parallel
+		const [total, rawData] = await Promise.all([
+			Record.countDocuments(conditions),
+			Record.find(conditions).sort(sort).skip(skip).limit(limit).populate('clinic', { name: 1 }).lean() // Convert to plain JavaScript objects
+		])
+
+		// Ensure data is an array
+		const data = Array.isArray(rawData) ? rawData : []
+
+		// Calculate pagination values
+		const totalPages = Math.ceil(total / limit)
+		const hasNextPage = page < totalPages
+		const hasPrevPage = page > 1
+
+		return {
+			data,
+			pagination: {
+				currentPage: page,
+				totalItems: total,
+				totalPages: totalPages,
+				itemsPerPage: limit,
+				hasNextPage,
+				hasPrevPage
+			},
+			sort: {
+				field: sortBy,
+				order: orderBy
+			}
+		}
+	} catch (error) {
+		return {
+			data: [],
+			pagination: {
+				currentPage: page,
+				totalItems: 0,
+				totalPages: 0,
+				itemsPerPage: limit,
+				hasNextPage: false,
+				hasPrevPage: false
+			},
+			sort: {
+				field: sortBy,
+				order: orderBy
+			}
+		}
+	}
+}
 export const chechPatientFn = async data => {
 	const isRecordExist = await Record.findOne({ patient: data.patient, status: 'active' })
 	if (isRecordExist) {

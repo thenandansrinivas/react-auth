@@ -10,9 +10,10 @@ import { qC } from './Utils/queryClient.js'
 
 const Layout = lazy(() => import('./Layout'))
 const Login = lazy(() => import('./Auth/Page'))
-const Index = lazy(() => import('./Index'))
+const Record = lazy(() => import('./Record/Page'))
 const Clinic = lazy(() => import('./Clinic/Page'))
 const Patient = lazy(() => import('./Patient/Page'))
+const AppPage = lazy(() => import('./App/Page'))
 
 const routes = createBrowserRouter([
 	{
@@ -25,7 +26,7 @@ const routes = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				element: <LazyComponent component={Index} />
+				element: <Record />
 			},
 			{
 				path: 'clinic',
@@ -34,6 +35,10 @@ const routes = createBrowserRouter([
 			{
 				path: 'patient',
 				element: <Patient />
+			},
+			{
+				path: 'settings',
+				element: <AppPage />
 			}
 		]
 	},

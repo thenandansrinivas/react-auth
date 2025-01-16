@@ -16,7 +16,7 @@ import { CreateRecordSchema, trayInputSchema } from './schema.js'
 import { format } from 'date-fns'
 
 export const display = async (req, res, next) => {
-	const data = await displayRecords()
+	const data = await displayRecords(req.query)
 	res.send(data)
 }
 
