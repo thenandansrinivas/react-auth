@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { logoutFn } from '../Auth/apiFn'
 import { qC } from '../Utils/queryClient'
 import { useNavigate } from 'react-router-dom'
+import { LogOut } from 'lucide-react'
 
 const { TextArea } = Input
 const DEFAULT_LOGO = '/logo.svg'
@@ -232,8 +233,8 @@ const App = () => {
 					</div>
 				</div>
 			</div>
-			<Button onClick={() => logoutMutate()} danger className='mx-auto'>
-				Logout
+			<Button onClick={() => logoutMutate()} color="danger" className="mx-auto" variant="filled" size="large">
+				<LogOut size={20} /> Logout
 			</Button>
 		</Card>
 	)
