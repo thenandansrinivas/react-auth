@@ -32,10 +32,9 @@ API.interceptors.response.use(
 						redirectUrl: window.location.pathname
 					}
 				})
-				return Promise.reject(error)
 			}
 		}
-		return Promise.reject(error)
+		return Promise.reject({ status, ...name })
 	}
 )
 

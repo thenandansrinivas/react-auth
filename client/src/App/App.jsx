@@ -1,14 +1,19 @@
-import { Card, Typography, Image, Upload, Input, message } from 'antd'
+import { Card, Typography, Image, Upload, Input, message, Button } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import { useApp } from '../hooks/useApp'
 import { useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
+import { useMutation } from '@tanstack/react-query'
+import { logoutFn } from '../Auth/apiFn'
+import { qC } from '../Utils/queryClient'
+import { useNavigate } from 'react-router-dom'
 
 const { TextArea } = Input
 const DEFAULT_LOGO = '/logo.svg'
 const { Text } = Typography
 
 const App = () => {
+	const navigate = useNavigate()
 	const { AppInfo, updateAppMutate, updateAppLogoMutate } = useApp()
 	const { control, setValue, reset } = useForm({
 		defaultValues: {
@@ -66,6 +71,15 @@ const App = () => {
 			document.head.appendChild(link)
 		}
 	}, [])
+
+	const { mutate: logoutMutate } = useMutation({
+		mutationFn: logoutFn,
+		onSuccess: () => {
+			qC.clear()
+			message.success('Logged out successfully')
+			navigate('/login', { replace: true })
+		}
+	})
 
 	const handleLogoUpload = file => {
 		const isSvg = file.type === 'image/svg+xml' // Check if the file is an SVG
@@ -218,6 +232,9 @@ const App = () => {
 					</div>
 				</div>
 			</div>
+			<Button onClick={() => logoutMutate()} danger className='mx-auto'>
+				Logout
+			</Button>
 		</Card>
 	)
 }

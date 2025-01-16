@@ -1,8 +1,8 @@
-import { Button, Typography, Card, Form as AntForm, Input } from 'antd'
+import { Button, Typography, Card, Form as AntForm, Input, Image } from 'antd'
 import { useForm, Controller } from 'react-hook-form'
 import { loginSchema } from './Schema.js'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LockIcon, UserIcon } from 'lucide-react'
+import { LockIcon, LogOut, UserIcon } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { useGlobalMessage } from '../Context/MessageContext'
 import { loginFn } from './apiFn.js'
@@ -31,24 +31,25 @@ const Page = () => {
 	const { mutate: loginMutateFn, isPending: isLoginPending } = useMutation({
 		mutationFn: loginFn,
 		onSuccess: () => {
-			message.success('Login Successful')
+			// First handle the success case
+			message.success('Login successful')
+			// Then navigate - this ensures both happen in the correct order
 			navigate(redirectUrl, { replace: true })
+		},
+		onError: error => {
+			const { message: errMsg } = error?.response?.data
+			message.error(errMsg)
 		}
 	})
 
 	const onSubmit = async data => {
-		loginMutateFn(data, {
-			onError: error => {
-				const { message: errMsg } = error?.response?.data
-				message.error(errMsg)
-			}
-		})
+		loginMutateFn(data)
 	}
 
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
 			<div className="text-center mb-8">
-				<img src="/logo.svg" alt="logo" className="mx-auto mb-4" width={100}></img>
+				<Image src="/logo.svg" preview={false} width={150} />
 				<Title level={2} className="mb-2">
 					Welcome back
 				</Title>
@@ -96,19 +97,6 @@ const Page = () => {
 						)}
 					/>
 
-					{/* <div className="flex justify-between mb-6">
-						<Controller
-							name="remember"
-							control={control}
-							render={({ field: { value, onChange } }) => (
-								<Checkbox checked={value} onChange={e => onChange(e.target.checked)}>
-									Remember me
-								</Checkbox>
-							)}
-						/>
-						<Link>Forgot password?</Link>
-					</div> */}
-
 					<Button
 						type="primary"
 						htmlType="submit"
@@ -118,12 +106,6 @@ const Page = () => {
 						iconPosition="end">
 						Sign in
 					</Button>
-
-					{/* <div className="text-center mt-6">
-						<Text type="secondary">
-							Not a member? <Link>Sign up now</Link>
-						</Text>
-					</div> */}
 				</AntForm>
 			</Card>
 		</div>

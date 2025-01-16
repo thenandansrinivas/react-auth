@@ -9,11 +9,9 @@ const useAuth = () => {
 		staleTime: Infinity
 	})
 
-	const { mutate: logoutMutate, isPending: isLogOutPending } = useMutation({
-		mutationFn: logoutFn
-	})
+	
 
-	return { Me, authLoading, logoutMutate, isLogOutPending }
+	return { Me, authLoading }
 }
 
 export default useAuth

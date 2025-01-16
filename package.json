@@ -9,7 +9,7 @@
 		"server"
 	],
 	"scripts": {
-		"dev":"concurrently /npm run server:dev /npm run client:dev/",
+		"dev":"concurrently \"npm run server:dev\" \"npm run client:dev\"",
 		"preview": "npm run client:build && concurrently \"npm run client:preview\" \"npm run server:preview\"",
 		"check": "prettier --check .",
 		"fix": "prettier --write .",
