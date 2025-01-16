@@ -1,5 +1,7 @@
+// api.js
 import axios from 'axios'
 import { qC } from '../Utils/queryClient.js'
+import { customNavigate } from '../Utils/navigate'
 
 const apiURL = import.meta.env.VITE_API_URL
 
@@ -17,14 +19,20 @@ API.interceptors.response.use(
 	response => response.data,
 	async error => {
 		const { config, response } = error
-		const { status, name } = response.data || {}
+		const { status, name } = response?.data || {}
+
 		if (status === 401 && name === 'InvalidAccessToken') {
 			try {
 				await API.get('/auth/refresh')
 				return RequestAfterTokenRefresh(config)
 			} catch (error) {
 				qC.clear()
-				window.location.href = '/login'
+				customNavigate('/login', {
+					state: {
+						redirectUrl: window.location.pathname
+					}
+				})
+				return Promise.reject(error)
 			}
 		}
 		return Promise.reject(error)

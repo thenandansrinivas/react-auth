@@ -4,7 +4,7 @@ export const qC = new QueryClient({
 	defaultOptions: {
 		queries: {
 			refetchOnWindowFocus: false,
-			retry: 2
+			retry: false
 		}
 	}
 })

@@ -16,7 +16,7 @@ export default defineConfig({
 		port: 5000,
 		strictPort: true,
 		emptyOutDir: true,
-		outDir: '../App',
+		outDir: '../main',
 		minify: 'terser',
 		cssMinify: 'lightningcss',
 		cssCodeSplit: true

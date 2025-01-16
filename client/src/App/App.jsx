@@ -102,7 +102,14 @@ const App = () => {
 	}
 
 	const debouncedLogChange = debounce((field, value) => {
-		updateAppMutate({ [field]: value })
+		updateAppMutate(
+			{ [field]: value },
+			{
+				onSuccess: () => {
+					message.success('App info updated successfully')
+				}
+			}
+		)
 	}, 300)
 
 	const handleFieldUpdate = (field, value) => {
@@ -126,7 +133,7 @@ const App = () => {
 	}
 
 	return (
-		<Card className="w-full p-6 shadow-md">
+		<Card className="w-full p-6 shadow-md capitalize">
 			<div className="flex flex-col items-center gap-8">
 				<Upload accept="image/*" showUploadList={false} beforeUpload={handleLogoUpload}>
 					<div className="w-48 h-48 rounded-full bg-gray-200 overflow-hidden cursor-pointer">

@@ -1,1 +1,0 @@
-import{r as e,b1 as n}from"./index-C6zX2SRZ.js";function t(){const[,n]=e.useReducer((e=>e+1),0);return n}function r(e,t,r,s){var a=n.unstable_batchedUpdates?function(e){n.unstable_batchedUpdates(r,e)}:r;return null!=e&&e.addEventListener&&e.addEventListener(t,a,s),{remove:function(){null!=e&&e.removeEventListener&&e.removeEventListener(t,a,s)}}}export{r as a,t as u};

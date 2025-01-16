@@ -67,7 +67,7 @@ userSchema.methods.omitPass = function () {
 }
 
 userSchema.statics.loggedInUser = async function (id) {
-	const user = await User.findOne({ _id: id }).select('name roles -_id')
+	const user = await User.findOne({ _id: id }).select('-password')
 	return user
 }
 

@@ -2,15 +2,19 @@ import { Button, Typography, Card, Form as AntForm, Input } from 'antd'
 import { useForm, Controller } from 'react-hook-form'
 import { loginSchema } from './Schema.js'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LockIcon, LogIn, UserIcon } from 'lucide-react'
+import { LockIcon, UserIcon } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
+import { useGlobalMessage } from '../Context/MessageContext'
 import { loginFn } from './apiFn.js'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const { Title, Text } = Typography
 
 const Page = () => {
+	const location = useLocation()
+	const message = useGlobalMessage()
 	const navigate = useNavigate()
+	const redirectUrl = location.state?.redirectUrl || '/'
 	const {
 		control,
 		handleSubmit,
@@ -27,18 +31,24 @@ const Page = () => {
 	const { mutate: loginMutateFn, isPending: isLoginPending } = useMutation({
 		mutationFn: loginFn,
 		onSuccess: () => {
-			navigate('/', { replace: true })
+			message.success('Login Successful')
+			navigate(redirectUrl, { replace: true })
 		}
 	})
 
 	const onSubmit = async data => {
-		loginMutateFn(data)
+		loginMutateFn(data, {
+			onError: error => {
+				const { message: errMsg } = error?.response?.data
+				message.error(errMsg)
+			}
+		})
 	}
 
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
 			<div className="text-center mb-8">
-				<LogIn size={48} className="text-blue-500 mb-4 mx-auto" />
+				<img src="/logo.svg" alt="logo" className="mx-auto mb-4" width={100}></img>
 				<Title level={2} className="mb-2">
 					Welcome back
 				</Title>

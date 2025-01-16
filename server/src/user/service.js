@@ -17,7 +17,7 @@ export const getAllUsers = async request => {
 		query.email = { $regex: email, $options: 'i' }
 	}
 	if (roles) {
-		query.roles = { $in: Array.isArray(roles) ? roles : [roles] }
+		query.roles = { $in: Array.isArray(roles) ? roles : [roles],  }
 	}
 	if (id) {
 		query._id = id

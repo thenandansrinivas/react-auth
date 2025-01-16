@@ -17,7 +17,7 @@ const items = [
 
 const Page = () => {
 	return (
-		<div className="h-screen">
+		<div className="h-full">
 			<Tabs
 				defaultActiveKey="1"
 				size="large"

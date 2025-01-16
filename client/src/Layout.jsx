@@ -4,6 +4,7 @@ import { Hospital, Monitor, Plus, Settings2, UsersRound, LogOut } from 'lucide-r
 import { useCallback, useMemo, useState } from 'react'
 import useAuth from './Hooks/useAuth'
 import classNames from 'classnames'
+import { qC } from './Utils/queryClient'
 
 const { Sider, Content } = AntLayout
 
@@ -70,6 +71,9 @@ const Layout = () => {
 		logoutMutate(
 			{},
 			{
+				onSettled: () => {
+					qC.clear()
+				},
 				onSuccess: () => {
 					navigate('/login', { replace: true })
 				}
